@@ -5,7 +5,7 @@ This allows a Node.js bot like [irc-framework](https://github.com/kiwiirc/irc-fr
 
 Installation
 ------------
-`Add the "unrealircd-rpc-node" folder in the same directory as your Node bot.
+Add the "unrealircd-rpc-node" folder in the same directory as your Node bot.
   
 
 Bot setup (with irc-framework)
