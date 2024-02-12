@@ -16,7 +16,7 @@ After doing that, be sure to rehash the IRCd.
 
 Usage
 -----
-Here is an example with IRC-framework
+Here is an example with [IRC-framework](https://github.com/kiwiirc/irc-framework)
 ```js
 const Connection = require('./unrealircd-rpc-node/lib/Connection');
 const address = "wss://user:api-user-password@irc.server.com:8600/"; // Open the port in firewall
