@@ -5,7 +5,7 @@ This allows a Node.js bot like [irc-framework](https://github.com/kiwiirc/irc-fr
 
 Installation
 ------------
-Add the "unrealircd-rpc-node" folder in the same directory as your Node bot.
+Add the `unrealircd-rpc-node` folder in the same directory as your node bot.
   
 
 Bot setup (with irc-framework)
@@ -29,19 +29,19 @@ async function Rpc() {
 
         let openPromise = new Promise((resolve, reject) => {
             rpc.connection.on('open', () => {
-                console.log('Connexion établie avec succès.');
+                console.log('Connection established successfully.');
                 resolve(rpc);
             });
 
             rpc.connection.on('error', (error) => {
-                console.error('Erreur de connexion:', error);
+                console.error('Connexion error:', error);
                 rpc.close();
                 rpc = null;
                 reject(error);
             });
 
             rpc.connection.on('close', () => {
-                console.log('Connexion fermée.');
+                console.log('Connection closed.');
                 rpc = null;
             });
         });
@@ -91,10 +91,10 @@ UnrealIRCd correctly, with the same API username and password you use
 here, with an allowed IP, and changing the `wss://127.0.0.1:8600/` too
 if needed.
 
-Please note that I only tested the ServerBan.js class. I don't know if the others work. I was inspired by
-the code [unrealircd-rpc-php](https://github.com/unrealircd/unrealircd-rpc-php) by copying.
-I use it on an irc-framework bot, it works well for ServerBan/add/del/list.
+Please note that I only tested the ServerBan.js class. I don't know if the others work. 
+I was inspired by the code [unrealircd-rpc-php](https://github.com/unrealircd/unrealircd-rpc-php) by copying.
+I use it on an irc-framework bot, it works well for ServerBan (add/del/list).
 
-I added setTimeout because it looks like a second command doesn't want to run immediately right after another.
+I added `setTimeout` because it looks like a second command doesn't want to run immediately right after another.
 
 
