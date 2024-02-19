@@ -96,19 +96,19 @@ I use it on an irc-framework bot, it works well for ServerBan (add/del/list).
 
 Commmands available (not all tested)
 ```js
-// serverban :
+// serverban : The server_ban.* JSON RPC calls can add, remove and list server bans such as KLINE, GLINE, etc. 
 await rpc.serverban().add("~account:test", "gline", "60", "no reason");
 await rpc.serverban().delete("~account:test", "gline");
 await rpc.serverban().getAll();
 await rpc.serverban().get("~account:test", "gline");
 
-// serverbanexception :
+// serverbanexception : The server_ban_exception.* JSON RPC calls can add, remove and list server ban exceptions (ELINEs). 
 await rpc.serverbanexception().add(name, types, reason, set_by = null, duration = null)
 await rpc.serverbanexception().delete(name)
 await rpc.serverbanexception().getAll()
 await rpc.serverbanexception().get(name)
 
-// user :
+// user : The user.* JSON RPC calls can list and retrieve information about users. 
 await rpc.user().getAll(object_detail_level = 2)
 await rpc.user().get(nick, object_detail_level = 4)
 await rpc.user().set_nick(nick, newnick)
@@ -123,16 +123,22 @@ await rpc.user().part(nick, channel, force = false)
 await rpc.user().quit(nick, reason)
 await rpc.user().kill(nick, reason)
 
-// channel :
+// channel : The channel.* JSON RPC calls can list and retrieve information about channels. 
 await rpc.channel().getAll(object_detail_level = 1)
 await rpc.channel().get(channel, object_detail_level = 3)
 await rpc.channel().set_mode(channel, modes, parameters)
 await rpc.channel().set_topic(channel, topic, set_by = null, set_at = null)
 await rpc.channel().kick(channel, nick, reason)
 
-// spamfilter :
+// spamfilter : The spamfilter.* JSON RPC calls can add, remove and list spamfilters. 
 await rpc.spamfilter().add(name, match_type, spamfilter_targets, ban_action, ban_duration, reason)
 await rpc.spamfilter().delete(name, match_type, spamfilter_targets, ban_action)
 await rpc.spamfilter().getAll()
 await rpc.spamfilter().get(name, match_type, spamfilter_targets, ban_action)
+
+// nameban : The name_ban.* JSON RPC calls can add, remove and list banned nicks and channels (q-lines).
+await rpc.nameban().add(name, reason, duration = null, set_by = null)
+await rpc.nameban().delete(name)
+await rpc.nameban().getAll()
+await rpc.nameban().get(name)
 ```
