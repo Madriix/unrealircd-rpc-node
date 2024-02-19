@@ -123,4 +123,11 @@ await rpc.user().part(nick, channel, force = false)
 await rpc.user().quit(nick, reason)
 await rpc.user().kill(nick, reason)
 
+// channel :
+await rpc.channel().getAll(object_detail_level = 1)
+await rpc.channel().get(channel, object_detail_level = 3)
+await rpc.channel().set_mode(channel, modes, parameters)
+await rpc.channel().set_topic(channel, topic, set_by = null, set_at = null)
+await rpc.channel().kick(channel, nick, reason)
+
 ```
