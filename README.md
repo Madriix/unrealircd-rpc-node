@@ -98,3 +98,33 @@ I use it on an irc-framework bot, it works well for ServerBan (add/del/list).
 I added `setTimeout` because it looks like a second command doesn't want to run immediately right after another.
 
 
+Commmands available (not all tested)
+```js
+// serverban :
+rpc.serverban().add("~account:test", "gline", "60", "no reason");
+rpc.serverban().delete("~account:test", "gline");
+rpc.serverban().getAll();
+rpc.serverban().get("~account:test", "gline");
+
+// serverbanexception :
+rpc.serverbanexception().add(name, types, reason, set_by = null, duration = null)
+rpc.serverbanexception().delete(name)
+rpc.serverbanexception().getAll()
+rpc.serverbanexception().get(name)
+
+// user :
+rpc.user().getAll(object_detail_level = 2)
+rpc.user().get(nick, object_detail_level = 4)
+rpc.user().set_nick(nick, newnick)
+rpc.user().set_username(nick, username)
+rpc.user().set_realname(nick, realname)
+rpc.user().set_vhost(nick, vhost)
+rpc.user().set_mode(nick, mode, hidden = false)
+rpc.user().set_snomask(nick, snomask, hidden = false)
+rpc.user().set_oper(nick, oper_account, oper_class, classVal = null, modes = null, snomask = null, vhost = null)
+rpc.user().join(nick, channel, key = null, force = false)
+rpc.user().part(nick, channel, force = false)
+rpc.user().quit(nick, reason)
+rpc.user().kill(nick, reason)
+
+```
