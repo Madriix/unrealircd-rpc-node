@@ -61,24 +61,24 @@ async function Rpc() {
 Then here's how to use it:
 ```js
 bot.on('message', async function (event) {
-	console.log('<' + event.nick + '>', event.message);
-	console.log(event);
+    console.log('<' + event.nick + '>', event.message);
+    console.log(event);
 
-	if (!/^#/.test(event.target) && /^node/.test(event.message)) {
+    if (!/^#/.test(event.target) && /^node/.test(event.message)) {
 
-		rpc = await Rpc();
+        rpc = await Rpc();
 
-		await rpc.serverban().add("~account:test", "gline", "60", "no reason");
+        await rpc.serverban().add("~account:test", "gline", "60", "no reason");
 
         await rpc.serverban().getAll()
-        .then(bans => {
-            bans.forEach(ban => {
-                bot.raw(`PRIVMSG ${event.nick} There's a ${ban.type} on ${ban.name}`);
-            });
-            //rpc.connection.close();
-        })
-        .catch(error => {});
-	}
+            .then(bans => {
+                bans.forEach(ban => {
+                    bot.raw(`PRIVMSG ${event.nick} There's a ${ban.type} on ${ban.name}`);
+                });
+                //rpc.connection.close();
+            })
+            .catch(error => { });
+    }
 });
 ```
 Just go to the bot's private account and type "node", it will answer you
