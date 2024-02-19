@@ -141,4 +141,15 @@ await rpc.nameban().add(name, reason, duration = null, set_by = null)
 await rpc.nameban().delete(name)
 await rpc.nameban().getAll()
 await rpc.nameban().get(name)
+
+// stats : Get some quick basic statistics. This is for example used by the admin panel for the 'Overview' page. 
+await rpc.stats().get(object_detail_level = 1)
+
+// whowas : The whowas.* JSON RPC calls retrieve whowas history of users. 
+await rpc.whowas().get(nick = null, ip = null, object_detail_level = 2)
+
+// log : The log.* JSON RPC calls allow you to subscribe and unsubscribe to log events (real-time streaming of JSON logs).  
+await rpc.log().subscribe(sources)
+await rpc.log().unsubscribe()
+await rpc.log().getAll(sources = null)
 ```
