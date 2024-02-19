@@ -130,4 +130,9 @@ await rpc.channel().set_mode(channel, modes, parameters)
 await rpc.channel().set_topic(channel, topic, set_by = null, set_at = null)
 await rpc.channel().kick(channel, nick, reason)
 
+// spamfilter :
+await rpc.spamfilter().add(name, match_type, spamfilter_targets, ban_action, ban_duration, reason)
+await rpc.spamfilter().delete(name, match_type, spamfilter_targets, ban_action)
+await rpc.spamfilter().getAll()
+await rpc.spamfilter().get(name, match_type, spamfilter_targets, ban_action)
 ```
