@@ -68,18 +68,16 @@ bot.on('message', async function (event) {
 
 		rpc = await Rpc();
 
-		rpc.serverban().add("~account:test", "gline", "60", "no reason");
+		await rpc.serverban().add("~account:test", "gline", "60", "no reason");
 
-		setTimeout(() => {
-			rpc.serverban().getAll()
-			.then(bans => {
-				bans.forEach(ban => {
-					bot.raw(`PRIVMSG ${event.nick} There's a ${ban.type} on ${ban.name}`);
-				});
-				//rpc.connection.close();
-			})
-			.catch(error => {});
-		}, 2000);
+        await rpc.serverban().getAll()
+        .then(bans => {
+            bans.forEach(ban => {
+                bot.raw(`PRIVMSG ${event.nick} There's a ${ban.type} on ${ban.name}`);
+            });
+            //rpc.connection.close();
+        })
+        .catch(error => {});
 	}
 });
 ```
@@ -95,36 +93,34 @@ Please note that I only tested the ServerBan.js class. I don't know if the other
 I was inspired by the code [unrealircd-rpc-php](https://github.com/unrealircd/unrealircd-rpc-php) by copying.
 I use it on an irc-framework bot, it works well for ServerBan (add/del/list).
 
-I added `setTimeout` because it looks like a second command doesn't want to run immediately right after another.
-
 
 Commmands available (not all tested)
 ```js
 // serverban :
-rpc.serverban().add("~account:test", "gline", "60", "no reason");
-rpc.serverban().delete("~account:test", "gline");
-rpc.serverban().getAll();
-rpc.serverban().get("~account:test", "gline");
+await rpc.serverban().add("~account:test", "gline", "60", "no reason");
+await rpc.serverban().delete("~account:test", "gline");
+await rpc.serverban().getAll();
+await rpc.serverban().get("~account:test", "gline");
 
 // serverbanexception :
-rpc.serverbanexception().add(name, types, reason, set_by = null, duration = null)
-rpc.serverbanexception().delete(name)
-rpc.serverbanexception().getAll()
-rpc.serverbanexception().get(name)
+await rpc.serverbanexception().add(name, types, reason, set_by = null, duration = null)
+await rpc.serverbanexception().delete(name)
+await rpc.serverbanexception().getAll()
+await rpc.serverbanexception().get(name)
 
 // user :
-rpc.user().getAll(object_detail_level = 2)
-rpc.user().get(nick, object_detail_level = 4)
-rpc.user().set_nick(nick, newnick)
-rpc.user().set_username(nick, username)
-rpc.user().set_realname(nick, realname)
-rpc.user().set_vhost(nick, vhost)
-rpc.user().set_mode(nick, mode, hidden = false)
-rpc.user().set_snomask(nick, snomask, hidden = false)
-rpc.user().set_oper(nick, oper_account, oper_class, classVal = null, modes = null, snomask = null, vhost = null)
-rpc.user().join(nick, channel, key = null, force = false)
-rpc.user().part(nick, channel, force = false)
-rpc.user().quit(nick, reason)
-rpc.user().kill(nick, reason)
+await rpc.user().getAll(object_detail_level = 2)
+await rpc.user().get(nick, object_detail_level = 4)
+await rpc.user().set_nick(nick, newnick)
+await rpc.user().set_username(nick, username)
+await rpc.user().set_realname(nick, realname)
+await rpc.user().set_vhost(nick, vhost)
+await rpc.user().set_mode(nick, mode, hidden = false)
+await rpc.user().set_snomask(nick, snomask, hidden = false)
+await rpc.user().set_oper(nick, oper_account, oper_class, classVal = null, modes = null, snomask = null, vhost = null)
+await rpc.user().join(nick, channel, key = null, force = false)
+await rpc.user().part(nick, channel, force = false)
+await rpc.user().quit(nick, reason)
+await rpc.user().kill(nick, reason)
 
 ```
