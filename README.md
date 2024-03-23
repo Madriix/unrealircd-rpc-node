@@ -1,5 +1,6 @@
 UnrealIRCd RPC for Node.js
 ==============
+[![Version](https://img.shields.io/badge/UnrealIRCd-6.0.6_or_later-darkgreen.svg)]()
 
 This allows a Node.js bot like [irc-framework](https://github.com/kiwiirc/irc-framework) to control UnrealIRCd via the JSON-RPC interface.
 
