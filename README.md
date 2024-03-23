@@ -5,10 +5,12 @@ This allows a Node.js bot like [irc-framework](https://github.com/kiwiirc/irc-fr
 
 Installation
 ------------
-Add the `unrealircd-rpc-node` folder in the same directory as your node bot.
+1) Download https://github.com/Madriix/unrealircd-rpc-node.git
+2) Rename the folder `unrealircd-rpc-node-main` to `unrealircd-rpc-node`
+3) Add `unrealircd-rpc-node` to the same folder as your node bot
   
 
-Bot setup (with irc-framework)
+Bot setup (with [IRC-framework](https://github.com/kiwiirc/irc-framework))
 -----------------
 UnrealIRCd 6.0.6 or later is needed and you need to enable
 [JSON-RPC](https://www.unrealircd.org/docs/JSON-RPC) in it.
@@ -18,31 +20,31 @@ Usage
 -----
 Here is an example with [IRC-framework](https://github.com/kiwiirc/irc-framework)
 ```js
-const Connection = require('./unrealircd-rpc-node/lib/Connection');
-const address = "wss://user:api-user-password@irc.server.com:8600/"; // Open the port in firewall for remote server
+let unreal_rpc = null;
 
-let rpc = null;
+async function UnrealIRCdRpc() {
+    if (!unreal_rpc) {
+        const Connection = require('./unrealircd-rpc-node/lib/Connection');
+        const address = "wss://user:api-user-password@irc.server.com:8600/"; // Open the port in firewall for remote server
 
-async function Rpc() {
-    if (!rpc) {
-        rpc = new Connection(address, { tls_verify: false });
+        unreal_rpc = new Connection(address, { tls_verify: false });
 
         let openPromise = new Promise((resolve, reject) => {
-            rpc.connection.on('open', () => {
+            unreal_rpc.connection.on('open', () => {
                 console.log('Connection established successfully.');
-                resolve(rpc);
+                resolve(unreal_rpc);
             });
 
-            rpc.connection.on('error', (error) => {
+            unreal_rpc.connection.on('error', (error) => {
                 console.error('Connexion error:', error);
-                rpc.close();
-                rpc = null;
+                unreal_rpc.close();
+                unreal_rpc = null;
                 reject(error);
             });
 
-            rpc.connection.on('close', () => {
+            unreal_rpc.connection.on('close', () => {
                 console.log('Connection closed.');
-                rpc = null;
+                unreal_rpc = null;
             });
         });
 
@@ -54,7 +56,7 @@ async function Rpc() {
 
     }
 
-    return rpc;
+    return unreal_rpc;
 }
 ```
 
@@ -66,18 +68,19 @@ bot.on('message', async function (event) {
 
     if (!/^#/.test(event.target) && /^node/.test(event.message)) {
 
-        rpc = await Rpc();
+        unreal_rpc = await UnrealIRCdRpc();
 
-        await rpc.serverban().add("~account:test", "gline", "60", "no reason");
+        await unreal_rpc.serverban().add("~account:test", "gline", "60", "no reason");
 
-        await rpc.serverban().getAll()
+        await unreal_rpc.serverban().getAll()
             .then(bans => {
                 bans.forEach(ban => {
                     bot.raw(`PRIVMSG ${event.nick} There's a ${ban.type} on ${ban.name}`);
                 });
-                //rpc.connection.close();
             })
             .catch(error => { });
+
+        // unreal_rpc.connection.close();
     }
 });
 ```
