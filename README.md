@@ -21,31 +21,35 @@ Usage
 -----
 Here is an example with [IRC-framework](https://github.com/kiwiirc/irc-framework)
 ```js
-let unreal_rpc = null;
+let unrealircd_rpc = null;
 
 async function UnrealIRCdRpc() {
-    if (!unreal_rpc) {
+    if (!unrealircd_rpc) {
         const Connection = require('./unrealircd-rpc-node/lib/Connection');
-        const address = "wss://user:api-user-password@irc.server.com:8600/"; // Open the port in firewall for remote server
 
-        unreal_rpc = new Connection(address, { tls_verify: false });
+        const address = "wss://ApiUser:api-user-password@irc.server.com:8600/"; // Open the port in firewall for remote server
+
+        // Example for local server :
+        //const address = "wss://ApiUser:api-user-password@127.0.0.1:8600/"; 
+
+        unrealircd_rpc = new Connection(address, { tls_verify: false });
 
         let openPromise = new Promise((resolve, reject) => {
-            unreal_rpc.connection.on('open', () => {
+            unrealircd_rpc.connection.on('open', () => {
                 console.log('Connection established successfully.');
-                resolve(unreal_rpc);
+                resolve(unrealircd_rpc);
             });
 
-            unreal_rpc.connection.on('error', (error) => {
+            unrealircd_rpc.connection.on('error', (error) => {
                 console.error('Connexion error:', error);
-                unreal_rpc.close();
-                unreal_rpc = null;
+                unrealircd_rpc.close();
+                unrealircd_rpc = null;
                 reject(error);
             });
 
-            unreal_rpc.connection.on('close', () => {
+            unrealircd_rpc.connection.on('close', () => {
                 console.log('Connection closed.');
-                unreal_rpc = null;
+                unrealircd_rpc = null;
             });
         });
 
@@ -57,7 +61,7 @@ async function UnrealIRCdRpc() {
 
     }
 
-    return unreal_rpc;
+    return unrealircd_rpc;
 }
 ```
 
@@ -67,13 +71,20 @@ bot.on('message', async function (event) {
     console.log('<' + event.nick + '>', event.message);
     console.log(event);
 
-    if (!/^#/.test(event.target) && /^node/.test(event.message)) {
+    if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_1/.test(event.message)) {
 
-        unreal_rpc = await UnrealIRCdRpc();
+        unrealircd_rpc = await UnrealIRCdRpc();
 
-        await unreal_rpc.serverban().add("~account:test", "gline", "60", "no reason");
+        await unrealircd_rpc.serverban().add("~account:test", "gline", "60", "no reason");
 
-        await unreal_rpc.serverban().getAll()
+        // unrealircd_rpc.connection.close();
+    }
+
+    if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_2/.test(event.message)) {
+
+        unrealircd_rpc = await UnrealIRCdRpc();
+
+        await unrealircd_rpc.serverban().getAll()
             .then(bans => {
                 bans.forEach(ban => {
                     bot.raw(`PRIVMSG ${event.nick} There's a ${ban.type} on ${ban.name}`);
@@ -81,11 +92,21 @@ bot.on('message', async function (event) {
             })
             .catch(error => { });
 
-        // unreal_rpc.connection.close();
+        // unrealircd_rpc.connection.close();
     }
+
+    if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_3/.test(event.message)) {
+
+        unrealircd_rpc = await UnrealIRCdRpc();
+
+        await unrealircd_rpc.message().send_privmsg("TestNick", "Test message");
+
+        // unrealircd_rpc.connection.close();
+    }
+
 });
 ```
-Just go to the bot's private account and type "node", it will answer you
+Just go to the bot's private account and type "!test_unrealircd_rpc_1", it will answer you
 and add a gline to ~account:test.
 
 If the example does not work, then make sure you have configured your
@@ -156,4 +177,10 @@ await rpc.whowas().get(nick = null, ip = null, object_detail_level = 2)
 await rpc.log().subscribe(sources)
 await rpc.log().unsubscribe()
 await rpc.log().getAll(sources = null)
+
+// message : The message.* JSON RPC calls can send_privmsg, send_notice, send_numeric, send_standard_reply. 
+await rpc.message().send_privmsg("nick", "Test message");
+await rpc.message().send_notice("nick", "Test notice");
+await rpc.message().send_numeric(nick, numeric, message);
+await rpc.message().send_standard_reply(nick, type, code, context, description);
 ```
