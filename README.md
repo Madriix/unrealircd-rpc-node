@@ -24,41 +24,42 @@ Here is an example with [IRC-framework](https://github.com/kiwiirc/irc-framework
 let unrealircd_rpc = null;
 
 async function UnrealIRCdRpc() {
-    if (!unrealircd_rpc) {
-        const Connection = require('./unrealircd-rpc-node/lib/Connection');
+    if (unrealircd_rpc) {
+        return unrealircd_rpc;
+    }
 
-        const address = "wss://ApiUser:api-user-password@irc.server.com:8600/"; // Open the port in firewall for remote server
+    const Connection = require('./unrealircd-rpc-node/lib/Connection');
 
-        // Example for local server :
-        //const address = "wss://ApiUser:api-user-password@127.0.0.1:8600/"; 
+	// local server
+	const address = "wss://ApiUser:api-user-password@127.0.0.1:8600/";
 
-        unrealircd_rpc = new Connection(address, { tls_verify: false });
+	// remote server
+    //const address = "wss://ApiUser:api-user-password@irc.server.com:8600/"; // Don't forget to open the port in firewall
 
-        let openPromise = new Promise((resolve, reject) => {
-            unrealircd_rpc.connection.on('open', () => {
+    unrealircd_rpc = new Connection(address, { tls_verify: false });
+
+    try {
+        await new Promise((resolve, reject) => {
+
+            unrealircd_rpc.connection.once('open', () => {
                 console.log('Connection established successfully.');
-                resolve(unrealircd_rpc);
+                resolve();
             });
 
-            unrealircd_rpc.connection.on('error', (error) => {
-                console.error('Connexion error:', error);
+            unrealircd_rpc.connection.once('error', (error) => {
+                console.error('Connection error:', error);
                 unrealircd_rpc.close();
                 unrealircd_rpc = null;
                 reject(error);
             });
 
-            unrealircd_rpc.connection.on('close', () => {
+            unrealircd_rpc.connection.once('close', () => {
                 console.log('Connection closed.');
                 unrealircd_rpc = null;
             });
         });
-
-        try {
-            await openPromise;
-        } catch (error) {
-            console.error('An error occurred:', error);
-        }
-
+    } catch (error) {
+        throw new Error("Unable to connect to UnrealIRCd RPC: " + error.message);
     }
 
     return unrealircd_rpc;
