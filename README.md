@@ -33,7 +33,6 @@ bot.on('message', async function (event) {
     console.log(event);
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_1/.test(event.message)) {
-        
         const urpc = await UnrealIRCdRpc.getInstance();
 
 		if (!urpc) {
@@ -47,8 +46,7 @@ bot.on('message', async function (event) {
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_2/.test(event.message)) {
-
-		const urpc = await UnrealIRCdRpc.getInstance();
+        const urpc = await UnrealIRCdRpc.getInstance();
 
 		if (!urpc) {
 			console.log("Unable to connect to the UnrealIRCd RPC.");
@@ -67,8 +65,7 @@ bot.on('message', async function (event) {
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_3/.test(event.message)) {
-
-		const urpc = await UnrealIRCdRpc.getInstance();
+        const urpc = await UnrealIRCdRpc.getInstance();
 
 		if (!urpc) {
 			console.log("Unable to connect to the UnrealIRCd RPC.");
@@ -76,6 +73,19 @@ bot.on('message', async function (event) {
 		}
 
         await urpc.connection.message().send_privmsg("TestNick", "Test message");
+
+        // urpc.close();
+    }
+
+    if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_4/.test(event.message)) {
+        const urpc = await UnrealIRCdRpc.getInstance();
+
+		if (!urpc) {
+			console.log("Unable to connect to the UnrealIRCd RPC.");
+			return;
+		}
+
+        await urpc.connection.message().send_numeric("TestNick", 318, "End of /WHOIS list.");
 
         // urpc.close();
     }
@@ -88,6 +98,8 @@ When testing the command "!test_unrealircd_rpc_2", you will see the list of bans
 
 By testing "!test_unrealircd_rpc_3", you will receive a message from the IRC server if you replace the nick TestNick with your own nick.
 
+You can also test "!test_unrealircd_rpc_4" and others.
+
 
 
 If the example does not work, then make sure you have configured your
@@ -96,7 +108,7 @@ here, with an allowed IP, and changing the `wss://127.0.0.1:8600/` too
 if needed.
 
 I was inspired by the code [unrealircd-rpc-php](https://github.com/unrealircd/unrealircd-rpc-php) by copying.
-I use it on an irc-framework bot, it works well for ServerBan (add/del/list) and Message (send_privmsg, send_notice).
+I use it on an irc-framework bot, it works well for ServerBan (add/del/list) and Message (send_privmsg, send_notice, send_numeric).
 
 
 Commmands available (not all tested)
