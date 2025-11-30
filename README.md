@@ -9,6 +9,7 @@ Installation
 1) Download https://github.com/Madriix/unrealircd-rpc-node.git
 2) Rename the folder `unrealircd-rpc-node-main` to `unrealircd-rpc-node`
 3) Add `unrealircd-rpc-node` to the same folder as your node bot
+4) In `unrealircd-rpc-node/UnrealIRCdRpc.js`, set the correct address and port for your UnrealIRCd RPC.
   
 
 Bot setup (with [IRC-framework](https://github.com/kiwiirc/irc-framework))
@@ -21,49 +22,8 @@ Usage
 -----
 Here is an example with [IRC-framework](https://github.com/kiwiirc/irc-framework)
 ```js
-let unrealircd_rpc = null;
-
-async function UnrealIRCdRpc() {
-    if (unrealircd_rpc) {
-        return unrealircd_rpc;
-    }
-
-    const Connection = require('./unrealircd-rpc-node/lib/Connection');
-
-	// local server
-	const address = "wss://ApiUser:api-user-password@127.0.0.1:8600/";
-
-	// remote server
-    //const address = "wss://ApiUser:api-user-password@irc.server.com:8600/"; // Don't forget to open the port in firewall
-
-    unrealircd_rpc = new Connection(address, { tls_verify: false });
-
-    try {
-        await new Promise((resolve, reject) => {
-
-            unrealircd_rpc.connection.once('open', () => {
-                console.log('Connection established successfully.');
-                resolve();
-            });
-
-            unrealircd_rpc.connection.once('error', (error) => {
-                console.error('Connection error:', error);
-                unrealircd_rpc.close();
-                unrealircd_rpc = null;
-                reject(error);
-            });
-
-            unrealircd_rpc.connection.once('close', () => {
-                console.log('Connection closed.');
-                unrealircd_rpc = null;
-            });
-        });
-    } catch (error) {
-        throw new Error("Unable to connect to UnrealIRCd RPC: " + error.message);
-    }
-
-    return unrealircd_rpc;
-}
+// Add this at the very top of your bot.
+const UnrealIRCdRpc = require('./unrealircd-rpc-node/UnrealIRCdRpc');
 ```
 
 Then here's how to use it:
@@ -73,19 +33,29 @@ bot.on('message', async function (event) {
     console.log(event);
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_1/.test(event.message)) {
+        
+        const urpc = await UnrealIRCdRpc.getInstance();
 
-        unrealircd_rpc = await UnrealIRCdRpc();
+		if (!urpc) {
+			console.log("Unable to connect to the UnrealIRCd RPC.");
+			return;
+		}
 
-        await unrealircd_rpc.serverban().add("~account:test", "gline", "60", "no reason");
+        await urpc.connection.serverban().add("~account:test", "gline", "60", "no reason");
 
-        // unrealircd_rpc.connection.close();
+        // urpc.close();
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_2/.test(event.message)) {
 
-        unrealircd_rpc = await UnrealIRCdRpc();
+		const urpc = await UnrealIRCdRpc.getInstance();
 
-        await unrealircd_rpc.serverban().getAll()
+		if (!urpc) {
+			console.log("Unable to connect to the UnrealIRCd RPC.");
+			return;
+		}
+
+        await urpc.connection.serverban().getAll()
             .then(bans => {
                 bans.forEach(ban => {
                     bot.raw(`PRIVMSG ${event.nick} There's a ${ban.type} on ${ban.name}`);
@@ -93,35 +63,46 @@ bot.on('message', async function (event) {
             })
             .catch(error => { });
 
-        // unrealircd_rpc.connection.close();
+        // urpc.close();
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_3/.test(event.message)) {
 
-        unrealircd_rpc = await UnrealIRCdRpc();
+		const urpc = await UnrealIRCdRpc.getInstance();
 
-        await unrealircd_rpc.message().send_privmsg("TestNick", "Test message");
+		if (!urpc) {
+			console.log("Unable to connect to the UnrealIRCd RPC.");
+			return;
+		}
 
-        // unrealircd_rpc.connection.close();
+        await urpc.connection.message().send_privmsg("TestNick", "Test message");
+
+        // urpc.close();
     }
 
 });
 ```
-Just go to the bot's private account and type "!test_unrealircd_rpc_1", it will answer you
-and add a gline to ~account:test.
+Just go to the bot's private account and type "!test_unrealircd_rpc_1", it will answer you and add a gline to ~account:test.
+
+When testing the command "!test_unrealircd_rpc_2", you will see the list of bans.
+
+By testing "!test_unrealircd_rpc_3", you will receive a message from the IRC server if you replace the nick TestNick with your own nick.
+
+
 
 If the example does not work, then make sure you have configured your
 UnrealIRCd correctly, with the same API username and password you use
 here, with an allowed IP, and changing the `wss://127.0.0.1:8600/` too
 if needed.
 
-Please note that I only tested the ServerBan.js class. I don't know if the others work. 
 I was inspired by the code [unrealircd-rpc-php](https://github.com/unrealircd/unrealircd-rpc-php) by copying.
-I use it on an irc-framework bot, it works well for ServerBan (add/del/list).
+I use it on an irc-framework bot, it works well for ServerBan (add/del/list) and Message (send_privmsg, send_notice).
 
 
 Commmands available (not all tested)
 ```js
+// let rpc = await urpc.connection;
+
 // serverban : The server_ban.* JSON RPC calls can add, remove and list server bans such as KLINE, GLINE, etc. 
 await rpc.serverban().add("~account:test", "gline", "60", "no reason");
 await rpc.serverban().delete("~account:test", "gline");
