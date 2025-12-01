@@ -9,7 +9,6 @@ Installation
 1) Download https://github.com/Madriix/unrealircd-rpc-node.git
 2) Rename the folder `unrealircd-rpc-node-main` to `unrealircd-rpc-node`
 3) Add `unrealircd-rpc-node` to the same folder as your node bot
-4) In `unrealircd-rpc-node/UnrealIRCdRpc.js`, set the correct address and port for your UnrealIRCd RPC.
   
 
 Bot setup (with [IRC-framework](https://github.com/kiwiirc/irc-framework))
@@ -22,8 +21,8 @@ Usage
 -----
 Here is an example with [IRC-framework](https://github.com/kiwiirc/irc-framework)
 ```js
-// Add this at the very top of your bot.
 const UnrealIRCdRpc = require('./unrealircd-rpc-node/UnrealIRCdRpc');
+UnrealIRCdRpc.address = "wss://ApiUser:api-user-password@127.0.0.1:8600/"; // Set the correct address and port for your UnrealIRCd RPC.
 ```
 
 Then here's how to use it:

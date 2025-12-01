@@ -1,7 +1,5 @@
 const Connection = require('./lib/Connection');
 
-const address = "wss://ApiUser:api-user-password@127.0.0.1:8600/";
-
 class UnrealIRCdRpc {
     static instance = null;
 
@@ -16,7 +14,7 @@ class UnrealIRCdRpc {
             if (this.instance) return this.instance;
 
             //const address = "wss://ApiUser:api-user-password@127.0.0.1:8600/";
-            const rpc = new UnrealIRCdRpc(address);
+            const rpc = new UnrealIRCdRpc(this.address);
             await rpc.connect();
             this.instance = rpc;
             return rpc;
