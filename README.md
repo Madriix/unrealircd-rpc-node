@@ -23,10 +23,9 @@ Here is an example with [IRC-framework](https://github.com/kiwiirc/irc-framework
 ```js
 const UnrealIRCdRpc = require('./unrealircd-rpc-node/UnrealIRCdRpc');
 UnrealIRCdRpc.address = "wss://ApiUser:api-user-password@127.0.0.1:8600/"; // Set the correct address and port for your UnrealIRCd RPC.
-```
 
-Then here's how to use it:
-```js
+// ...
+
 bot.on('message', async function (event) {
     console.log('<' + event.nick + '>', event.message);
     console.log(event);
@@ -51,14 +50,11 @@ bot.on('message', async function (event) {
 			console.log("Unable to connect to the UnrealIRCd RPC.");
 			return;
 		}
-
-        await urpc.connection.serverban().getAll()
-            .then(bans => {
-                bans.forEach(ban => {
-                    bot.raw(`PRIVMSG ${event.nick} There's a ${ban.type} on ${ban.name}`);
-                });
-            })
-            .catch(error => { });
+        
+        const bans = await urpc.connection.serverban().getAll();
+        for (const ban of bans) {
+            bot.raw(`PRIVMSG ${event.nick} :There's a ${ban.type} on ${ban.name}`);
+        }
 
         // urpc.close();
     }
