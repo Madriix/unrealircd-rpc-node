@@ -9,6 +9,7 @@ Installation
 1) Download https://github.com/Madriix/unrealircd-rpc-node.git
 2) Rename the folder `unrealircd-rpc-node-main` to `unrealircd-rpc-node`
 3) Add `unrealircd-rpc-node` to the same folder as your node bot
+4) Install ws: `npm install ws`
   
 
 Bot setup (with [IRC-framework](https://github.com/kiwiirc/irc-framework))
