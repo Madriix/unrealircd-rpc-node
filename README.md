@@ -6,6 +6,12 @@ This allows a Node.js bot like [irc-framework](https://github.com/kiwiirc/irc-fr
 
 Installation
 ------------
+1) Install: `npm i unrealircd-rpc-node`
+4) Install ws: `npm i ws`
+
+
+Manual installation
+------------
 1) Download https://github.com/Madriix/unrealircd-rpc-node.git
 2) Rename the folder `unrealircd-rpc-node-main` to `unrealircd-rpc-node`
 3) Add `unrealircd-rpc-node` to the same folder as your node bot
@@ -22,7 +28,11 @@ Usage
 -----
 Here is an example with [IRC-framework](https://github.com/kiwiirc/irc-framework)
 ```js
-const UnrealIRCdRpc = require('./unrealircd-rpc-node/UnrealIRCdRpc');
+/*
+	Manual installation
+	const UnrealIRCdRpc = require('./unrealircd-rpc-node/UnrealIRCdRpc');
+*/
+const UnrealIRCdRpc = require('unrealircd-rpc-node');
 UnrealIRCdRpc.address = "wss://ApiUser:api-user-password@127.0.0.1:8600/"; // Set the correct address and port for your UnrealIRCd RPC.
 
 // ...

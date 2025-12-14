@@ -1,0 +1,27 @@
+{
+  "name": "unrealircd-rpc-node",
+  "version": "1.0.0",
+  "description": "Node.js library for UnrealIRCd's JSON-RPC interface",
+  "keywords": [
+    "unrealircd",
+    "rpc"
+  ],
+  "homepage": "https://github.com/Madriix/unrealircd-rpc-node#readme",
+  "bugs": {
+    "url": "https://github.com/Madriix/unrealircd-rpc-node/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Madriix/unrealircd-rpc-node.git"
+  },
+  "license": "MIT",
+  "author": "Madriix",
+  "type": "commonjs",
+  "main": "UnrealIRCdRpc.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
