@@ -7,7 +7,7 @@ This allows a Node.js bot like [irc-framework](https://github.com/kiwiirc/irc-fr
 Installation
 ------------
 1) Install: `npm i unrealircd-rpc-node`
-4) Install ws: `npm i ws`
+2) Code a little by integrating it with [IRC-framework](https://github.com/kiwiirc/irc-framework) or another library.
 
 
 Manual installation
@@ -16,6 +16,7 @@ Manual installation
 2) Rename the folder `unrealircd-rpc-node-main` to `unrealircd-rpc-node`
 3) Add `unrealircd-rpc-node` to the same folder as your node bot
 4) Install ws: `npm install ws`
+5) Code a little by integrating it with [IRC-framework](https://github.com/kiwiirc/irc-framework) or another library.
   
 
 Bot setup (with [IRC-framework](https://github.com/kiwiirc/irc-framework))
