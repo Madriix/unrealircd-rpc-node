@@ -33,7 +33,7 @@ Here is an example with [IRC-framework](https://github.com/kiwiirc/irc-framework
  Manual installation :
  const { UnrealIRCdRpc, unrealircd } = require('./unrealircd-rpc-node/UnrealIRCdRpc');
 */
-const { UnrealIRCdRpc, unrealircd } = require('unrealircd-rpc-node');
+const { UnrealIRCdRpc, unrealircdRpc } = require('unrealircd-rpc-node');
 UnrealIRCdRpc.address = "wss://ApiUser:api-user-password@127.0.0.1:8600/"; // Set the correct address and port for your UnrealIRCd RPC.
 
 // ...
@@ -88,7 +88,7 @@ bot.on('message', async function (event) {
 		*/
 
 		/* Method 2 */
-		await unrealircd.send_privmsg("TestNick", "Test message");
+		await unrealircdRpc.sendPrivmsg("TestNick", "Test message");
 
 
     }
@@ -126,7 +126,7 @@ bot.on('message', async function (event) {
 		*/
 
 		/* Method 2 */
-		const securitygrps = await unrealircd.listSecurityGroups();
+		const securitygrps = await unrealircdRpc.listSecurityGroups();
 		for (const group of securitygrps) {
 			bot.raw(`PRIVMSG ${event.nick} :Security-Group : ${group.name}`);
 		}
@@ -172,6 +172,419 @@ if needed.
 I was inspired by the code [unrealircd-rpc-php](https://github.com/unrealircd/unrealircd-rpc-php) by copying.
 I use it on an irc-framework bot, it works well for ServerBan (add/del/list) and Message (send_privmsg, send_notice, send_numeric).
 
+---
+
+With `unrealircdRpc`, you can use the following commands:
+---
+
+## Server bans (KLINE / GLINE / etc.)
+
+### Add a server ban
+
+```js
+await unrealircdRpc.serverBanAdd(
+  "~account:test",
+  "gline",
+  3600,
+  "Abuse"
+);
+```
+
+### Remove a server ban
+
+```js
+await unrealircdRpc.serverBanDelete("~account:test", "gline");
+```
+
+### GLINE (shortcut)
+
+```js
+await unrealircdRpc.gline(
+  "~account:baduser",
+  600,
+  "Flood"
+);
+```
+
+### KLINE (shortcut)
+
+```js
+await unrealircdRpc.kline(
+  "baduser@host",
+  0,
+  "Permanent ban"
+);
+```
+
+### List all server bans
+
+```js
+const bans = await unrealircdRpc.serverBanGetAll();
+```
+
+### Get a specific server ban
+
+```js
+const ban = await unrealircdRpc.serverBanGet(
+  "~account:test",
+  "gline"
+);
+```
+
+---
+
+## Server ban exceptions (ELINE)
+
+### Add an exception
+
+```js
+await unrealircdRpc.serverBanExceptionAdd(
+  "~account:trusted",
+  ["gline", "kline"],
+  "Trusted user",
+  "admin",
+  3600
+);
+```
+
+### Delete an exception
+
+```js
+await unrealircdRpc.serverBanExceptionDelete("~account:trusted");
+```
+
+### List all exceptions
+
+```js
+const elines = await unrealircdRpc.serverBanExceptionGetAll();
+```
+
+### Get a specific exception
+
+```js
+const eline = await unrealircdRpc.serverBanExceptionGet(
+  "~account:trusted"
+);
+```
+
+---
+
+## Users
+
+### List connected users
+
+```js
+const users = await unrealircdRpc.listUsers();
+```
+
+### Get a user
+
+```js
+const user = await unrealircdRpc.getUser("Nick");
+```
+
+### Change nickname
+
+```js
+await unrealircdRpc.setNick("OldNick", "NewNick");
+```
+
+### Change username
+
+```js
+await unrealircdRpc.setUsername("Nick", "newuser");
+```
+
+### Change realname
+
+```js
+await unrealircdRpc.setRealname("Nick", "Real Name");
+```
+
+### Set vHost
+
+```js
+await unrealircdRpc.setVhost("Nick", "user.example.org");
+```
+
+### Set user modes
+
+```js
+await unrealircdRpc.setUserMode("Nick", "+i");
+```
+
+### Set snomask
+
+```js
+await unrealircdRpc.setSnomask("Nick", "+s");
+```
+
+### Grant IRCop privileges
+
+```js
+await unrealircdRpc.setOper(
+  "Nick",
+  "oper_account",
+  "netadmin"
+);
+```
+
+### Join a channel
+
+```js
+await unrealircdRpc.joinChannel("Nick", "#channel");
+```
+
+### Part a channel
+
+```js
+await unrealircdRpc.partChannel("Nick", "#channel");
+```
+
+### Quit the network
+
+```js
+await unrealircdRpc.quitUser("Nick", "Bye");
+```
+
+### Kill a user
+
+```js
+await unrealircdRpc.killUser("Nick", "Policy violation");
+```
+
+---
+
+## Channels
+
+### List channels
+
+```js
+const channels = await unrealircdRpc.listChannels();
+```
+
+### Get a channel
+
+```js
+const channel = await unrealircdRpc.getChannel("#channel");
+```
+
+### Set channel modes
+
+```js
+await unrealircdRpc.setChannelMode("#channel", "+m", []);
+```
+
+### Set channel topic
+
+```js
+await unrealircdRpc.setChannelTopic(
+  "#channel",
+  "New topic"
+);
+```
+
+### Kick a user
+
+```js
+await unrealircdRpc.kick(
+  "#channel",
+  "Nick",
+  "Off-topic"
+);
+```
+
+---
+
+## Spamfilter
+
+### Add a spamfilter
+
+```js
+await unrealircdRpc.spamfilterAdd(
+  "badword",
+  "simple",
+  ["privmsg", "notice"],
+  "block",
+  0,
+  "Forbidden word"
+);
+```
+
+### Delete a spamfilter
+
+```js
+await unrealircdRpc.spamfilterDelete(
+  "badword",
+  "simple",
+  ["privmsg", "notice"],
+  "block"
+);
+```
+
+### List all spamfilters
+
+```js
+const filters = await unrealircdRpc.spamfilterGetAll();
+```
+
+### Get a specific spamfilter
+
+```js
+const filter = await unrealircdRpc.spamfilterGet(
+  "badword",
+  "simple",
+  ["privmsg"],
+  "block"
+);
+```
+
+---
+
+## Name bans (Q-line)
+
+### Add a nameban
+
+```js
+await unrealircdRpc.namebanAdd(
+  "BadNick",
+  "Reserved nickname",
+  3600
+);
+```
+
+### Delete a nameban
+
+```js
+await unrealircdRpc.namebanDelete("BadNick");
+```
+
+### List all namebans
+
+```js
+const namebans = await unrealircdRpc.namebanGetAll();
+```
+
+### Get a specific nameban
+
+```js
+const nameban = await unrealircdRpc.namebanGet("BadNick");
+```
+
+---
+
+## Stats
+
+```js
+const stats = await unrealircdRpc.getStats();
+```
+
+---
+
+## Whowas
+
+```js
+const history = await unrealircdRpc.whowasGet("OldNick");
+```
+
+---
+
+## Logs
+
+### Subscribe to logs
+
+```js
+await unrealircdRpc.logSubscribe(["server", "oper"]);
+```
+
+### Unsubscribe from logs
+
+```js
+await unrealircdRpc.logUnsubscribe();
+```
+
+### Get logs
+
+```js
+const logs = await unrealircdRpc.logGetAll();
+```
+
+---
+
+## Messages
+
+### Send a PRIVMSG
+
+```js
+await unrealircdRpc.sendPrivmsg(
+  "Nick",
+  "Hello world"
+);
+```
+
+### Send a NOTICE
+
+```js
+await unrealircdRpc.sendNotice(
+  "Nick",
+  "This is a notice"
+);
+```
+
+### Send a numeric
+
+```js
+await unrealircdRpc.sendNumeric(
+  "Nick",
+  123,
+  "Custom numeric"
+);
+```
+
+### Send a standard reply
+
+```js
+await unrealircdRpc.sendStandardReply(
+  "Nick",
+  "error",
+  "NO_ACCESS",
+  {},
+  "Access denied"
+);
+```
+
+---
+
+## Security groups
+
+### List security groups
+
+```js
+const groups = await unrealircdRpc.listSecurityGroups();
+```
+
+### Get a specific security group
+
+```js
+const group = await unrealircdRpc.getSecurityGroup(
+  "unknown-users"
+);
+```
+
+---
+
+## Notes
+
+* All methods return the raw UnrealIRCd RPC response
+* Errors are propagated as-is
+* Optional parameters follow the official UnrealIRCd API
+* Not all commands have been tested by me, except for a few
+* If you update it or find something that works, please let me know
+
+
+
+## Old tutorial (still functional)
+---
 
 Commmands available (not all tested)
 ```js
