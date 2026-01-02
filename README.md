@@ -30,10 +30,10 @@ Usage
 Here is an example with [IRC-framework](https://github.com/kiwiirc/irc-framework)
 ```js
 /*
-	Manual installation
-	const UnrealIRCdRpc = require('./unrealircd-rpc-node/UnrealIRCdRpc');
+ Manual installation :
+ const { UnrealIRCdRpc, unrealircd } = require('./unrealircd-rpc-node/UnrealIRCdRpc');
 */
-const UnrealIRCdRpc = require('unrealircd-rpc-node');
+const { UnrealIRCdRpc, unrealircd } = require('unrealircd-rpc-node');
 UnrealIRCdRpc.address = "wss://ApiUser:api-user-password@127.0.0.1:8600/"; // Set the correct address and port for your UnrealIRCd RPC.
 
 // ...
@@ -72,6 +72,9 @@ bot.on('message', async function (event) {
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_3$/.test(event.message)) {
+
+		/* Method 1 */
+		/*
         const urpc = await UnrealIRCdRpc.getInstance();
 
 		if (!urpc) {
@@ -82,6 +85,12 @@ bot.on('message', async function (event) {
         await urpc.connection.message().send_privmsg("TestNick", "Test message");
 
         // urpc.close();
+		*/
+
+		/* Method 2 */
+		await unrealircd.send_privmsg("TestNick", "Test message");
+
+
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_4$/.test(event.message)) {
@@ -98,6 +107,9 @@ bot.on('message', async function (event) {
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_5$/.test(event.message)) {
+
+		/* Method 1 */
+		/*
         const urpc = await UnrealIRCdRpc.getInstance();
 
 		if (!urpc) {
@@ -111,6 +123,13 @@ bot.on('message', async function (event) {
 		}
 
         // urpc.close();
+		*/
+
+		/* Method 2 */
+		const securitygrps = await unrealircd.listSecurityGroups();
+		for (const group of securitygrps) {
+			bot.raw(`PRIVMSG ${event.nick} :Security-Group : ${group.name}`);
+		}
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_6$/.test(event.message)) {

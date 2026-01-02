@@ -13,6 +13,10 @@ class UnrealIRCdRpc {
         try {
             if (this.instance) return this.instance;
 
+            if (!this.address) {
+                throw new Error("UnrealIRCdRpc.address is not defined");
+            }
+
             //const address = "wss://ApiUser:api-user-password@127.0.0.1:8600/";
             const rpc = new UnrealIRCdRpc(this.address);
             await rpc.connect();
@@ -60,4 +64,42 @@ class UnrealIRCdRpc {
     }
 }
 
-module.exports = UnrealIRCdRpc;
+let urpcInstance = null;
+
+async function getURPC() {
+    if (!urpcInstance) {
+        urpcInstance = await UnrealIRCdRpc.getInstance();
+
+        if (!urpcInstance) {
+            throw new Error("Unable to connect to the UnrealIRCd RPC.");
+        }
+    }
+    return urpcInstance;
+}
+
+
+let unrealircd = {
+    async gline(mask, duration, reason) {
+        const urpc = await getURPC();
+        return urpc.connection.serverban().add(mask, "gline", duration, reason);
+    },
+
+    async kline(mask, duration, reason) {
+        const urpc = await getURPC();
+        return urpc.connection.serverban().add(mask, "kline", duration, reason);
+    },
+
+    async send_privmsg(nick, msg) {
+        const urpc = await getURPC();
+        await urpc.connection.message().send_privmsg(nick, msg);
+    },
+
+    async listSecurityGroups() {
+        const urpc = await getURPC();
+        return await urpc.connection.securitygroup().getAll();
+    }
+
+    // Continue building later.
+};
+
+module.exports = { UnrealIRCdRpc, unrealircd };
