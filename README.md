@@ -189,22 +189,6 @@ await unrealircdRpc.serverBanAdd(
   "Abuse"
 );
 ```
-or gline :
-```js
-await unrealircdRpc.gline(
-  "~account:test",
-  "1d",
-  "Abuse"
-);
-```
-or kline : 
-```js
-await unrealircdRpc.kline(
-  "~account:test",
-  "1d",
-  "Abuse"
-);
-```
 
 ### Remove a server ban
 
