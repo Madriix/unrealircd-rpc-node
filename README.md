@@ -189,6 +189,22 @@ await unrealircdRpc.serverBanAdd(
   "Abuse"
 );
 ```
+or gline :
+```js
+await unrealircdRpc.gline(
+  "~account:test",
+  "1d",
+  "Abuse"
+);
+```
+or kline : 
+```js
+await unrealircdRpc.kline(
+  "~account:test",
+  "1d",
+  "Abuse"
+);
+```
 
 ### Remove a server ban
 
@@ -582,9 +598,8 @@ const group = await unrealircdRpc.getSecurityGroup(
 * If you update it or find something that works, please let me know
 
 
-
-## Old tutorial (still functional)
 ---
+## Old tutorial (still functional)
 
 Commmands available (not all tested)
 ```js
