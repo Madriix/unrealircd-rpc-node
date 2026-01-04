@@ -29,12 +29,10 @@ Usage
 -----
 Here is an example with [IRC-framework](https://github.com/kiwiirc/irc-framework)
 ```js
-/*
- Manual installation :
- const { UnrealIRCdRpc, unrealircd } = require('./unrealircd-rpc-node/UnrealIRCdRpc');
-*/
 const { UnrealIRCdRpc, unrealircdRpc } = require('unrealircd-rpc-node');
-UnrealIRCdRpc.address = "wss://ApiUser:api-user-password@127.0.0.1:8600/"; // Set the correct address and port for your UnrealIRCd RPC.
+
+// Set the correct address and port for your UnrealIRCd RPC.
+UnrealIRCdRpc.address = "wss://ApiUser:api-user-password@127.0.0.1:8600/";
 
 // ...
 
@@ -43,113 +41,63 @@ bot.on('message', async function (event) {
     console.log(event);
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_1$/.test(event.message)) {
-        const urpc = await UnrealIRCdRpc.getInstance();
 
-		if (!urpc) {
-			console.log("Unable to connect to the UnrealIRCd RPC.");
-			return;
-		}
+        await unrealircdRpc.serverBanAdd(
+            "~account:test",
+            "gline",
+            "60",
+            "Abuse"
+        );
 
-        await urpc.connection.serverban().add("~account:test", "gline", "60", "no reason");
-
-        // urpc.close();
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_2$/.test(event.message)) {
-        const urpc = await UnrealIRCdRpc.getInstance();
 
-		if (!urpc) {
-			console.log("Unable to connect to the UnrealIRCd RPC.");
-			return;
-		}
-        
-        const bans = await urpc.connection.serverban().getAll();
+        const bans = await unrealircdRpc.serverBanGetAll();
         for (const ban of bans) {
             bot.raw(`PRIVMSG ${event.nick} :There's a ${ban.type} on ${ban.name}`);
         }
 
-        // urpc.close();
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_3$/.test(event.message)) {
 
-		/* Method 1 */
-		/*
-        const urpc = await UnrealIRCdRpc.getInstance();
-
-		if (!urpc) {
-			console.log("Unable to connect to the UnrealIRCd RPC.");
-			return;
-		}
-
-        await urpc.connection.message().send_privmsg("TestNick", "Test message");
-
-        // urpc.close();
-		*/
-
-		/* Method 2 */
-		await unrealircdRpc.sendPrivmsg("TestNick", "Test message");
-
+        await unrealircdRpc.sendPrivmsg("TestNick", "Test message");
 
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_4$/.test(event.message)) {
-        const urpc = await UnrealIRCdRpc.getInstance();
 
-		if (!urpc) {
-			console.log("Unable to connect to the UnrealIRCd RPC.");
-			return;
-		}
+        await unrealircdRpc.sendNumeric(
+            "Nick",
+            318,
+            "End of /WHOIS list."
+        );
 
-        await urpc.connection.message().send_numeric("TestNick", 318, "End of /WHOIS list.");
-
-        // urpc.close();
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_5$/.test(event.message)) {
 
-		/* Method 1 */
-		/*
-        const urpc = await UnrealIRCdRpc.getInstance();
+        const securitygroups = await unrealircdRpc.listSecurityGroups();
+        for (const group of securitygroups) {
+            bot.raw(`PRIVMSG ${event.nick} :Security-Group : ${group.name}`);
+        }
 
-		if (!urpc) {
-			console.log("Unable to connect to the UnrealIRCd RPC.");
-			return;
-		}
-
-		const securitygrps = await urpc.connection.securitygroup().getAll();
-		for (const group of securitygrps) {
-			bot.raw(`PRIVMSG ${event.nick} :Security-Group : ${group.name}`);
-		}
-
-        // urpc.close();
-		*/
-
-		/* Method 2 */
-		const securitygrps = await unrealircdRpc.listSecurityGroups();
-		for (const group of securitygrps) {
-			bot.raw(`PRIVMSG ${event.nick} :Security-Group : ${group.name}`);
-		}
     }
 
     if (!/^#/.test(event.target) && /^!test_unrealircd_rpc_6$/.test(event.message)) {
-        const urpc = await UnrealIRCdRpc.getInstance();
 
-		if (!urpc) {
-			console.log("Unable to connect to the UnrealIRCd RPC.");
-			return;
-		}
+        const group = await unrealircdRpc.getSecurityGroup(
+            "unknown-users"
+        );
 
-		const securitygrps = await urpc.connection.securitygroup().get('unknown-users');
+        if (group) {
+            bot.raw(`PRIVMSG ${event.nick} Security-Group ${group.name}`);
+            for (const [key, value] of Object.entries(group)) {
+                bot.raw(`PRIVMSG ${event.nick} :${key} = ${value}`);
+            }
+        }
 
-		if (securitygrps) {
-			bot.raw(`PRIVMSG ${event.nick} Security-Group ${securitygrps.name}`);
-			for (const [key, value] of Object.entries(securitygrps)) {
-				bot.raw(`PRIVMSG ${event.nick} :${key} = ${value}`);
-			}
-		}
-
-        // urpc.close();
     }
 
 });
@@ -185,7 +133,7 @@ With `unrealircdRpc`, you can use the following commands:
 await unrealircdRpc.serverBanAdd(
   "~account:test",
   "gline",
-  3600,
+  3600, // or "3600"
   "Abuse"
 );
 ```
