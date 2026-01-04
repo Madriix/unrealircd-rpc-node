@@ -531,7 +531,7 @@ const group = await unrealircdRpc.getSecurityGroup(
 
 
 ---
-## Old tutorial (still functional)
+## Basic system (without shortening it)
 
 Commmands available (not all tested)
 ```js
