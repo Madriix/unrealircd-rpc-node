@@ -14,7 +14,7 @@ class UnrealIRCdRpc {
             if (this.instance) return this.instance;
 
             if (!this.address) {
-                throw new Error("UnrealIRCdRpc.address is not defined");
+                throw new Error("[UnrealIRCdRpc] UnrealIRCdRpc.address is not defined");
             }
 
             //const address = "wss://ApiUser:api-user-password@127.0.0.1:8600/";
@@ -24,7 +24,7 @@ class UnrealIRCdRpc {
             return rpc;
 
         } catch (err) {
-            console.error("Unable to connect to RPC:", err);
+            console.error("[UnrealIRCdRpc] Unable to connect to RPC:", err);
             return null;
         }
     }
@@ -37,19 +37,19 @@ class UnrealIRCdRpc {
         await new Promise((resolve, reject) => {
 
             this.connection.connection.once('open', () => {
-                console.log('Connection established successfully.');
+                console.log('[UnrealIRCdRpc] Connection established successfully.');
                 resolve();
             });
 
             this.connection.connection.once('error', (error) => {
-                console.error('Connection error:', error);
+                console.error('[UnrealIRCdRpc] Connection error:', error);
                 this.close();
                 UnrealIRCdRpc.instance = null;
                 reject(error);
             });
 
             this.connection.connection.once('close', () => {
-                console.log('Connection closed.');
+                console.log('[UnrealIRCdRpc] Connection closed.');
                 this.connection = null;
                 UnrealIRCdRpc.instance = null;
             });
